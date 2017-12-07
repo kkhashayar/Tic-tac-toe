@@ -1,0 +1,120 @@
+"""Simple tic-tac-toe"""
+import random, os
+import winsound
+global board
+global board_temp
+global count
+r_count = 0
+ 
+count = 0
+board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+board_temp = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+ 
+def show(board):
+    print()
+    print()
+    print("|",board[0],"|",board[1],"|",board[2],"|")
+    print("-------------")
+    print("|",board[3],"|",board[4],"|",board[5],"|")
+    print("-------------")
+    print("|",board[6],"|",board[7],"|",board[8],"|")
+    print()
+    print("***********************")
+ 
+"""Problem 1: how to write a better checkwin? with loop? """
+def check_win(board):
+    if board [0] == board [1] and board [0] == board [2] and board [0] != ' ':
+        return True
+    if board [3] == board [4] and board [3] == board [5] and board [3] != ' ':
+        return True
+    if board [6] == board [7] and board [6] == board [8] and board [6] != ' ':
+        return True
+    if board [0] == board [3] and board [0] == board [6] and board [0] != ' ':
+        return True
+    if board [1] == board [4] and board [1] == board [7] and board [1] != ' ':
+        return True
+    if board [2] == board [5] and board [2] == board [8] and board [2] != ' ':
+        return True
+    if board [0] == board [4] and board [0] == board [8] and board [0] != ' ':
+        return True
+    if board [2] == board [4] and board [2] == board [6] and board [2] != ' ':
+        return True
+ 
+def user_move():
+    global count
+    move = int(input("Select free spot on the board: "))
+    try: # error handling for wrong entry, string entry
+       
+        if move >=9:
+            print("Wrong range, choose another spot")
+            user_move()
+        elif board[move] != " ":
+            print("Spot has been taken, choose another spot!")
+            user_move()
+        elif board[move] == " ":
+            board[move] = "x"
+            count += 1
+            os.system("cls")
+            winsound.Beep(2000,50)
+            show(board)
+            if check_win(board) is True:
+                winsound.Beep(2500,100)
+                print("you won")
+                more_game()
+            elif check_tie() is True:
+                print("tie")
+                more_game()
+            else:
+                computer_move()
+    except ValueError:
+        print("use numbers!")
+        user_move()
+           
+def computer_move():
+    global count    
+    move = random.randint(0,8)
+    if board[move] != " ":
+        computer_move()
+    elif board[move] == " ":
+        board[move] = "o"
+        count +=1
+        os.system("cls")
+        winsound.Beep(2000,50)
+        show(board)
+        if check_win(board) is True:
+            winsound.Beep(2500,100)
+            print("i Won")
+            more_game()
+        else:
+            user_move()
+ 
+def more_game():
+    global board
+    global count
+    global r_count
+    global board_temp
+    print("do you wanna play again? y/n")
+    choice = input("> ")
+    if choice == "y" or choice == "Y":
+        print("ok lets play")
+        board_temp = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+        board = board_temp
+        count = r_count
+        turn()            
+    else:
+        print("thanks for playing")
+        winsound.Beep(1000,200)
+        print("Goodby")
+"""problem 3: how to choose the element (X or O)? """
+def turn():    
+    turn = input("Do you wanna be first? y/n: ")
+    show(board)
+    if turn == "y" or turn == "Y":
+        user_move()
+    else:
+        computer_move()
+print(count)
+def check_tie():
+    if count == 9 and check_win is not True:
+        return True
+turn()
